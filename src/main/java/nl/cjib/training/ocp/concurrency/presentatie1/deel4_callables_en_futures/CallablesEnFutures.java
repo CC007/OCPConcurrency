@@ -39,6 +39,7 @@ public class CallablesEnFutures
 		Future<String> stringFuture = executorService.submit(new MyCallable());
 
 		// Hieronder zie je hoe je het starten van een task kan voorkomen of een task voortijdig kan stoppen.
+		// Dit zou zorgen voor een CancellationException unchecked exception als je probeert de get method aan te roepen
 //		stringFuture.cancel(true);
 
 		// Je kan met de get methode wachten op de waarde van de future.
@@ -58,8 +59,10 @@ public class CallablesEnFutures
 		catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
 		}
-
-		// Zoals altijd tenminste een shutdown.
-		executorService.shutdown();
+		finally {
+			// Zoals altijd tenminste een shutdown.
+			// In dit geval dus in een finally block, omdat er unchecked exceptions kunnen optreden
+			executorService.shutdown();
+		}
 	}
 }
