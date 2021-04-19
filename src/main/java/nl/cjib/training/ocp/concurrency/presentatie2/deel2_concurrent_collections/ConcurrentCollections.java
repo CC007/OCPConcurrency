@@ -58,8 +58,8 @@ public class ConcurrentCollections
 			linkedBlockingDeque.offerFirst(7, 1, TimeUnit.SECONDS);
 			linkedBlockingDeque.offerLast(8, 1, TimeUnit.SECONDS); // Zelfde als offer(...)
 
-			linkedBlockingDeque.pollFirst(1, TimeUnit.SECONDS);
-			linkedBlockingDeque.pollLast(1, TimeUnit.SECONDS); // Zelfde als poll(...)
+			linkedBlockingDeque.pollFirst(1, TimeUnit.SECONDS); // Zelfde als poll(...)
+			linkedBlockingDeque.pollLast(1, TimeUnit.SECONDS);
 		}
 		catch (InterruptedException e) {
 			System.exit(1);
@@ -89,8 +89,17 @@ public class ConcurrentCollections
 		new Thread(() -> {
 			sleep();
 			copyOnWriteArrayList.add(6);
-		});
+		}).start();
 
+		for (Integer elem : copyOnWriteArrayList) {
+			sleep();
+			// hier wordt 6 niet geprint, omdat de forloop de iterator al had opgehaald voordat 6 was toegevoegd
+			// 6 staat daarom in een kopie van de originele onderliggende lijst
+			// die lijst heeft zijn eigen iterator
+			System.out.println(elem);
+		}
+		sleep();
+		System.out.println();
 		for (Integer elem : copyOnWriteArrayList) {
 			sleep();
 			// hier wordt 6 niet geprint, omdat de forloop de iterator al had opgehaald voordat 6 was toegevoegd
