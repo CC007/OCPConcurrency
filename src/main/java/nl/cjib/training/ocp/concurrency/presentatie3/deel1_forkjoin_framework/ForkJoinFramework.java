@@ -43,14 +43,14 @@ public class ForkJoinFramework
 	 * <p>
 	 * 2 subclasses van de {@link ForkJoinTask} zijn de {@link RecursiveAction} en de {@link RecursiveTask}
 	 * <p>
-	 * Deze twee classes hebben 1 abstract class: compute()
+	 * Deze twee classes hebben 1 abstract method: compute()
 	 * Deze methode zou de volgende pseudocode moeten volgen:
 	 * <p>
 	 * if (meegegeven hoeveelheid werk is klein genoeg)
-	 * voer dit werk uit
+	 *    voer dit werk uit
 	 * else
-	 * splits het werk in meerdere delen
-	 * roep dit gesplitste werk recursief aan en wacht op het resultaat
+	 *    splits het werk in meerdere delen
+	 *    roep dit gesplitste werk recursief aan en wacht op het resultaat
 	 * <p>
 	 * Hieronder zie je een voorbeeld van een {@link RecursiveAction}, waarbij strings worden uitgeprint.
 	 */
@@ -119,7 +119,14 @@ public class ForkJoinFramework
 				sortingTask1.fork();
 				sortingTask2.fork();
 				// waarna we het resultaat samenvoegen
-				return merge(sortingTask1.join(), sortingTask2.join());
+				synchronized (this) {
+					List<Integer> left = sortingTask1.join();
+					List<Integer> right = sortingTask2.join();
+					System.out.println(left);
+					System.out.println(right);
+					System.out.println();
+					return merge(left, right);
+				}
 			}
 		}
 

@@ -17,7 +17,7 @@ public class ParallelStreams
 	 */
 	public static void main(String[] args)
 	{
-		List<Integer> integers = List.of(1, 2, 3, 4, 5, 6);
+		List<Integer> integers = List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
 
 		// Maak een parallele stream van een sequential stream:
 		Stream<Integer> sequentialStream = integers.stream();
@@ -93,8 +93,15 @@ public class ParallelStreams
 		System.out.println("Sum: " + integers.parallelStream()
 			.reduce(0, (acc, integer) -> acc + integer, (acc1, acc2) -> acc1 + acc2));
 		ArrayList<Integer> listCopy = integers.parallelStream()
-			.collect(ArrayList::new, (acc, integer) -> acc.add(integer), (acc, otherAcc) -> acc.addAll(otherAcc));
+			.collect(ArrayList::new, (acc, integer) -> {
+				System.out.println(acc + ", " + integer + Thread.currentThread().getName());
+				acc.add(integer);
+			}, (acc, otherAcc) -> {
+				System.out.println(acc + ", " + otherAcc + Thread.currentThread().getName());
+				acc.addAll(otherAcc);
+			});
 
+		System.out.println(listCopy);
 
 	}
 }
